@@ -144,6 +144,9 @@ p, li, .site-description {
     margin-bottom: 20px;
 
 }
+.alert{
+    color: black !important;
+}
 
 /* Обертка для пагинации */
 .pagination-wrapper {

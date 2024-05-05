@@ -4,7 +4,20 @@ from django.contrib import messages
 from django.http import HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from captcha.fields import CaptchaField
+from django import forms
 
+class SignupForm(forms.Form):
+    name = forms.CharField(max_length=100)
+    email = forms.EmailField()
+    pwd = forms.CharField(widget=forms.PasswordInput)
+    gender = forms.ChoiceField(choices=[('1', 'Мужской'), ('2', 'Женский')])
+    captcha = CaptchaField()
+
+class LoginForm(forms.Form):
+    email = forms.EmailField()
+    pwd = forms.CharField(widget=forms.PasswordInput)
+    captcha = CaptchaField()
 def index(request):
     # Проверяем, установлена ли сессия для пользователя
     if 'user' not in request.session:
@@ -36,39 +49,48 @@ def search(request):
         results = File_Upload.objects.none()
     return render(request, 'search_results.html', {'results': results})
 def login(request):
-    if 'user' not in request.session:
-        if request.method == 'POST':
-            email = request.POST['email']
-            pwd = request.POST['pwd']
-            userExists = User.objects.filter(email=email, pwd=pwd)
-            if userExists.exists():
-                request.session["user"] = email
+    if 'user' in request.session:
+        return redirect('index')
+
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            pwd = form.cleaned_data['pwd']
+            user = User.objects.filter(email=email, pwd=pwd).first()
+            if user:
+                request.session['user'] = user.email
                 return redirect('index')
             else:
                 messages.warning(request, "Неверный E-Mail или пароль!")
-        return render(request, 'login.html')
+        else:
+            messages.error(request, "Ошибка ввода капчи или других данных формы.")
     else:
-        return redirect('index')
-
+        form = LoginForm()
+    return render(request, 'login.html', {'form': form})
 def logout(request):
     del request.session['user']
     return redirect('login')
 
 def signup(request):
     if request.method == 'POST':
-        name = request.POST['name']
-        email = request.POST['email']
-        pwd = request.POST['pwd']
-        gender = request.POST['gender']
-        if not User.objects.filter(email=email).exists():
-            create_user = User.objects.create(name=name, email=email, pwd=pwd, gender=gender)
-            create_user.save()
-            messages.success(request, "Ваш аккаунт успешно создан! Войдите в него!")
-            return redirect('login')
+        form = SignupForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            email = form.cleaned_data['email']
+            pwd = form.cleaned_data['pwd']
+            gender = form.cleaned_data['gender']
+            if not User.objects.filter(email=email).exists():
+                User.objects.create(name=name, email=email, pwd=pwd, gender=gender)
+                messages.success(request, "Ваш аккаунт успешно создан! Войдите в него!")
+                return redirect('login')
+            else:
+                messages.warning(request, "E-Mail уже зарегистрирован!")
         else:
-            messages.warning(request, "E-Mail уже зарегистрирован!")
-    return render(request, 'signup.html')
-
+            messages.error(request, "Ошибка ввода капчи или других данных формы.")
+    else:
+        form = SignupForm()
+    return render(request, 'signup.html', {'form': form})
 @login_required
 def file_upload(request):
     if not request.user.is_superuser:
