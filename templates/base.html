@@ -73,7 +73,7 @@ function toggleBackground() {
     toggleCircle.classList.add('toggle-right');
     body.classList.remove('bg-white');
     body.classList.add('bg-primary');
-    toggleCircle.style.backgroundColor = "#007bff"; // Синий цвет кружка
+    toggleCircle.style.backgroundColor = "#000000"; // Синий цвет кружка
 
     // Обновляем логотип для синего фона
     document.querySelector('img').src = '{% static "images/white.png" %}';
@@ -85,7 +85,7 @@ function toggleBackground() {
     toggleCircle.classList.add('toggle-left');
     body.classList.add('bg-white');
     body.classList.remove('bg-primary');
-    toggleCircle.style.backgroundColor = "#007bff"; // Белый цвет кружка
+    toggleCircle.style.backgroundColor = "#000000"; // Белый цвет кружка
 
     // Обновляем логотип для белого фона
     document.querySelector('img').src = '{% static "images/blue.png" %}';
@@ -105,14 +105,14 @@ function loadState() {
     toggleCircle.classList.add('toggle-right');
     body.classList.remove('bg-white');
     body.classList.add('bg-primary');
-    toggleCircle.style.backgroundColor = "#007bff";
+    toggleCircle.style.backgroundColor = "#000000";
     document.querySelector('img').src = '{% static "images/white.png" %}';
   } else if (backgroundState === 'white') {
     toggleCircle.classList.remove('toggle-right');
     toggleCircle.classList.add('toggle-left');
     body.classList.add('bg-white');
     body.classList.remove('bg-primary');
-    toggleCircle.style.backgroundColor = "#007bff";
+    toggleCircle.style.backgroundColor = "#000000";
     document.querySelector('img').src = '{% static "images/blue.png" %}';
   }
 }

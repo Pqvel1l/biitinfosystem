@@ -27,7 +27,7 @@ body, .main-section {
 .toggle-container.blue .toggle-circle {
   left: auto;
   right: 2.5px; /* Переместить кружок вправо */
-  background-color: #007bff; /* Белый цвет кружка */
+  background-color: #000000; /* Белый цвет кружка */
 }
 .toggle-circle {
   position: absolute;
@@ -35,7 +35,7 @@ body, .main-section {
   left: 5px; /* Начальное положение слева */
   width: 20px;
   height: 20px;
-  background-color: #007bff;
+  background-color: #000000;
   border-radius: 50%;
   transition: all 0.3s ease; /* Плавное перемещение */
 }
@@ -46,12 +46,12 @@ body.bg-primary .toggle-circle {
 }
 
 body.bg-primary {
-  background-color: #007bff; /* Синий фон */
+  background-color: #000000 !important; /* Синий фон */
   color: white;
 }
 
 body.bg-white {
-  background-color: #ffffff; /* Белый фон */
+  background-color: #ffffff !important; /* Белый фон */
   color: black;
 }
 
